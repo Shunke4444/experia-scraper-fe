@@ -10,16 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatDateRange } from '@/lib/utils/date-formatter';
+import { formatDate, formatDateRange } from '@/lib/utils/date-formatter';
 import { formatPriceRange } from '@/lib/utils/price-formatter';
 
-export default function Home() {
+export default function EventsPage() {
   const { data, isLoading, error } = useEvents({});
 
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Events Data</h1>
+        <h1 className="text-2xl font-bold mb-6">Events</h1>
         <LoadingSkeleton variant="table" />
       </div>
     );
@@ -28,7 +28,7 @@ export default function Home() {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Events Data</h1>
+        <h1 className="text-2xl font-bold mb-6">Events</h1>
         <p className="text-red-500">Error loading events</p>
       </div>
     );
@@ -38,36 +38,32 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Events Data ({events.length} events)</h1>
+      <h1 className="text-2xl font-bold mb-6">Events ({events.length})</h1>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
               <TableHead>Event Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Venue</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
-              <TableHead>Min Price</TableHead>
-              <TableHead>Max Price</TableHead>
+              <TableHead>Dates</TableHead>
+              <TableHead>Price Range</TableHead>
               <TableHead>Performances</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {events.map((event) => (
               <TableRow key={event.id}>
-                <TableCell className="font-mono text-xs">{event.id}</TableCell>
                 <TableCell className="font-medium">{event.name}</TableCell>
                 <TableCell className="capitalize">{event.eventType}</TableCell>
                 <TableCell>{event.venue.name}</TableCell>
-                <TableCell>{event.venue.address.city}</TableCell>
-                <TableCell>{new Date(event.dateRange.start).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(event.dateRange.end).toLocaleDateString()}</TableCell>
-                <TableCell>${event.priceRange.min}</TableCell>
-                <TableCell>${event.priceRange.max}</TableCell>
+                <TableCell>
+                  {formatDateRange(event.dateRange.start, event.dateRange.end)}
+                </TableCell>
+                <TableCell>
+                  {formatPriceRange(event.priceRange.min, event.priceRange.max)}
+                </TableCell>
                 <TableCell>{event.performanceCount}</TableCell>
               </TableRow>
             ))}
